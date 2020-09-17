@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+*{
+    box-sizing: border-box;
+}
+body{
+    margin: 0;
+    display: flex;
+}
+
+#sidebar{
+    width: 25%;
+    height: 100vh;
+    display: flex;
+    background-color: aqua;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.btn{
+    width: 70%;
+    height: 70px;
+    background-color: rgb(69, 69, 175);
+    margin: 0 0 50px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+}
+section{
+    width: 75%;
+    height: 100vh;
+    background-color: aquamarine;
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:space-around
+   
+}
+.card{
+    width: 23%;
+    min-height: 250px;
+    background-color: blueviolet;
+    text-align: center;
+    margin: 0 5px 5px 0 ;
+
+
+}
+/* .card:last-child{
+    margin: 0;
+} */
+h1{
+    margin: 0;
+}
+.onsale{
+   
+    width: 100%;    
+    background-color: rgba(165, 42, 42, 0.781);
+   
+    text-align: center;
+    font-weight: 900;
+
+}
+.text{
+    display: flex;
+    justify-content: space-around;
+    background-color: burlywood;
+
+}
+p{
+    margin:10px 0;
+}
+
+</style>
+<body>
+    <div id="sidebar">
+        <div class="btn" id="Taichung" onclick="productAll(0)" >Taichung</div>
+        <div class="btn" id="Taipei" onclick="productAll(2)">Taipei</div>
+        <div class="btn" id="Kaohsiung" onclick="productAll(1)">Kaohsiung</div>
+    </div>
+    <section>
+        <!-- <div class="card">
+            <h1>商品名：</h1>
+            <img src="img/flex-axis.png" alt="" width="100%" height="160px">
+            <div class="onsale">優惠中</div>
+            <div class="text">     
+                <p>存貨<u>123456</u></p>
+                <p>售價<u>123456元</u></p>
+            </div>
+        </div>
+      -->
+    </section>
+
+        <script>
+           var section = document.querySelector("section") 
+
+
+
+
+
+           
+               
+
+            
+            function clear() {
+                section.innerHTML = " "
+            }
+            
+
+            function productAll(x) { 
+                     
+                    clear()
+                   
+                    fetch('https://run.mocky.io/v3/a1bd9f89-926c-46ac-930a-1d1cae8dd7e5')
+                    .then(function (response) {
+                        return response.json();
+                    })
+                    .then(function (SYFurniture) {                       
+                        var product =SYFurniture.records.product
+
+                        product.forEach(product_one => {
+                        var name = product_one.productName //商品名稱
+                        var img =  product_one.imageURL //商品圖片
+                        var price = product_one.states.sale.price //商品價格
+                        var sale = product_one.states.sale.onsale//商品折扣
+                        var truePrice = price*sale //折扣後價格
+                        var location = product_one.states.stock.location //倉庫地區
+                        var productAllLoation = product_one.states.stock.location[x] //全部倉
+                        var product_one_tc= product_one.states.stock.location[0] //台中倉
+                        var product_one_ks= product_one.states.stock.location[1] //高雄倉
+                        var product_one_tp= product_one.states.stock.location[2] // 台北倉
+
+                        // var inventory_tc    =product_one_tc.amount //台中倉庫存
+                        // var inventory_ks    =product_one_ks.amount //高雄倉庫存
+                        // var inventory_tp    =product_one_tp.amount //台北倉庫存
+                        
+                         
+                        var btns =document.querySelectorAll(".btn")
+                        var saleDiv 
+                        var inventory
+                        var priceAll
+                        if (sale == 1) {
+                            saleDiv = ``
+                        } else if(sale == 0.5){
+                            saleDiv = `<div class="onsale">5折優惠中</div>`
+                        }else if (sale == 0.85) {
+                            saleDiv = `<div class="onsale">85折優惠中</div>`
+                        }
+                        
+                        
+                        var productAllLoationAmount = product_one.states.stock.location[x].amount //全部庫存
+                        
+                        if (productAllLoationAmount > 3) {
+                            inventory =  `<p>存貨<u>${productAllLoationAmount}</u></p>`
+                            priceAll = `<p>售價<u>${truePrice}元</u></p>`
+                        } else if (productAllLoationAmount ==0) {
+                            inventory =  `<p>無庫存</p>`
+                            priceAll = ``
+                            saleDiv = ``
+                            
+                        }else if (  0 < productAllLoationAmount   || productAllLoationAmount < 3 ) {
+                            inventory =  `<p>最後剩下<u>${productAllLoationAmount}</u>個</p>`
+                            priceAll = `<p>售價<u>${truePrice}元</u></p>`
+                        }
+                        
+                        section.innerHTML +=
+                                        `
+                                        <div class="card">
+                                                <h1>商品名：${name}</h1>
+                                                <img src="${img}" alt="" width="100%" height="160px">
+                                                ${saleDiv}
+                                                <div class="text">     
+                                                    ${inventory}
+                                                    ${priceAll}
+                                                </div>
+                                        </div>
+                                        `
+                                        
+                            
+                    
+                        
+                                
+                        
+                        });
+                        
+                    });
+
+
+
+            }
+
+
+           
+           
+           
+
+
+
+
+
+        </script>
+    
+</body>
+</html>
